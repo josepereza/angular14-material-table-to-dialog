@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTable } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { SampleDialogComponent } from '../sample.dialog/sample.dialog.component';
 import { ListadoDataSource, ListadoItem } from './listado-datasource';
 
@@ -15,13 +15,14 @@ export class ListadoComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<ListadoItem>;
-  dataSource: ListadoDataSource;
-
+ 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['id', 'name','weight', 'symbol'];
-
+  listado=new ListadoDataSource();
+dataSource = new MatTableDataSource(this.listado.data);
   constructor(private _dialog: MatDialog ) {
-    this.dataSource = new ListadoDataSource();
+   
+    
   }
 
   ngAfterViewInit(): void {
@@ -38,5 +39,9 @@ export class ListadoComponent implements AfterViewInit {
       disableClose: true,
       data: row
     });
+  }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
